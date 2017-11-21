@@ -17,12 +17,16 @@ import javax.swing.JPanel;
  * @author User
  */
 public class Mapa extends JPanel{
+    private int x;
+    private int y;
     private Image foto;
-    private ArrayList<Rectangle> bordes;
+    private Rectangle[] bordes;
 
     public Mapa() {
-        this.foto = Toolkit.getDefaultToolkit().getImage("mapa.png");
-        this.bordes = new ArrayList<>();
+        this.x=0;
+        this.y=0;
+        this.foto = Toolkit.getDefaultToolkit().getImage("fondonuevo.png");
+        this.bordes = new Rectangle[7];
         bordes();
     }
 
@@ -30,31 +34,50 @@ public class Mapa extends JPanel{
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); 
         bordes();
-        g.drawImage(this.foto,0,0, this);
+        g.drawImage(this.foto,this.x,this.y, this);
     }
     public void bordes(){
-        Rectangle box = new Rectangle(258,661,180,60);
-        Rectangle box2= new Rectangle(318,601,120,60);
-        Rectangle box3= new Rectangle(378,541,60,60);
-        Rectangle box4= new Rectangle(542,540,240,60);
-        Rectangle box5= new Rectangle(782,480,240,60);
-        Rectangle box6= new Rectangle(1022,480,240,240);
-        Rectangle box7= new Rectangle(0,720,1920,1080);
-        this.bordes.add(box);
-        this.bordes.add(box2);
-        this.bordes.add(box3);
-        this.bordes.add(box4);
-        this.bordes.add(box5);
-        this.bordes.add(box6);
-        this.bordes.add(box7);
+        Rectangle box = new Rectangle(258+this.x,661,180,60);
+        Rectangle box2= new Rectangle(318+this.x,601,120,60);
+        Rectangle box3= new Rectangle(378+this.x,541,60,60);
+        Rectangle box4= new Rectangle(542+this.x,540,240,60);
+        Rectangle box5= new Rectangle(782+this.x,480,240,60);
+        Rectangle box6= new Rectangle(1022+this.x,480,240,240);
+        Rectangle box7= new Rectangle(0+this.x,720,3840,60);
+        this.bordes[0]=box;
+        this.bordes[1]=box2;
+        this.bordes[2]=box3;
+        this.bordes[3]=box4;
+        this.bordes[4]=box5;
+        this.bordes[5]=box6;
+        this.bordes[6]=box7;
+        
     }
 
-    public ArrayList<Rectangle> getBordes() {
+    public Rectangle[] getBordes() {
         return bordes;
     }
 
-    public void setBordes(ArrayList<Rectangle> bordes) {
+    public void setBordes(Rectangle[] bordes) {
         this.bordes = bordes;
+    }
+
+
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
     
 }

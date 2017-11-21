@@ -22,7 +22,8 @@ private EventosTeclado teclado;
 private Visual visual;
 private Mapa mapa;
 private int contadornuevo=0;
-
+private int colisiones=0;
+private boolean intersectaenemigo=false;
     public Vista() {
         this.teclado = new EventosTeclado();
         this.visual=new Visual();
@@ -40,76 +41,93 @@ private int contadornuevo=0;
 
     public boolean colisionar(){
         boolean si=false;
+        this.visual.getMoneda().setBordes(new Rectangle(this.visual.getMoneda().getX(),this.visual.getMoneda().getY(),
+        this.visual.getMoneda().getX()+16,
+                this.visual.getMoneda().getY()+16));
         this.visual.getPersonaje().setBordes(new Rectangle(this.visual.getPersonaje().getX()+20,
-                this.visual.getPersonaje().getY()-10,55,90));
-        for (int i = 0; i <this.mapa.getBordes().size(); i++) {
-            if(this.visual.getPersonaje().getBordes().intersects(this.mapa.getBordes().get(i))){
-                si=true;
-            }    
+                this.visual.getPersonaje().getY()-10,55,100));
+    for (Rectangle borde : this.mapa.getBordes()) {
+        if (this.visual.getPersonaje().getBordes().intersects(borde)) {
+            this.colisiones++;
+            si=true;    
+        }
+    }
+        if(this.visual.getPersonaje().getBordes().intersects(this.visual.getMoneda().getBordes())) {
+            this.intersectaenemigo=true;
         }
         return si;
     }
-    public void saltar(){
-     if(this.contadornuevo<40){
-             this.visual.saltar();
-         this.contadornuevo++;
-         this.visual.getPersonaje().setY(this.visual.getPersonaje().getY()-2);
-     }
-     else{
-         this.contadornuevo=0;
-     }
+    public void camara(){
+
+        if(this.visual.getPersonaje().getX()>=0){
+            this.mapa.bordes();
+            this.mapa.setX(this.mapa.getX()-2);
+            this.visual.getMoneda().setX(this.visual.getMoneda().getX()-2);
+        }
+
     }
     public void actualizar(){ 
         teclado.actualizar();
-        if(teclado.abajo){
-            
-        this.visual.getPersonaje().setY(this.visual.getPersonaje().getY()+2);
-        System.out.println("ABAJO");
 
-            System.out.println(this.visual.getPersonaje().getY());
-            System.out.println(this.visual.getPersonaje().getX());
-            if(colisionar()){
-            this.visual.getPersonaje().setY(this.visual.getPersonaje().getY()-2);
-            }
-           }
-        else if(teclado.arriba){
-            this.visual.saltar();
-            while(this.contadornuevo<10){
-             this.visual.getPersonaje().setY(this.visual.getPersonaje().getY()-5);
-             this.visual.getPersonaje().setX(this.visual.getPersonaje().getX()+1);
-             this.contadornuevo++;
-            }
-            this.contadornuevo=0;
-            while(this.contadornuevo<10){
-              this.visual.getPersonaje().setY(this.visual.getPersonaje().getY()+4);
-             this.visual.getPersonaje().setX(this.visual.getPersonaje().getX()+1);
-             this.contadornuevo++;
-            }
-            this.contadornuevo=0;
-            System.out.println("ARRIBA");
+        this.visual.moneda();
+        this.visual.enemigo();
+        if(!teclado.arriba&&!teclado.abajo&&!teclado.izquierda&&!teclado.derecha){
+            this.visual.getPersonaje().setXsprite(0);
+            this.visual.getPersonaje().setYsprite(0);
+        }
+        if(teclado.arriba){
+            this.visual.getPersonaje().setY(this.visual.getPersonaje().getY()-70);
             if(colisionar()){
             this.visual.getPersonaje().setY(this.visual.getPersonaje().getY()+2);
             }
         }
+        
+        if(teclado.abajo){
+        
+        this.visual.getPersonaje().setXsprite(1);
+        this.visual.getPersonaje().setYsprite(2);
+        this.visual.getPersonaje().setX(this.visual.getPersonaje().getX()+2);
+        System.out.println(this.visual.getPersonaje().getY());
+        System.out.println(this.visual.getPersonaje().getX());
+        if((colisionar())&&(this.colisiones>2)){
+        this.visual.getPersonaje().setY(this.visual.getPersonaje().getY()-2);
+        this.visual.getPersonaje().setX(this.visual.getPersonaje().getX()-2);
+        }
+
+        }
+        
         if(teclado.izquierda){  
         this.visual.getPersonaje().setX(this.visual.getPersonaje().getX()-2);
         this.visual.caminar();
-        System.out.println("IZQUIERDA");
         if(colisionar()){
+           
                 this.visual.getPersonaje().setX(this.visual.getPersonaje().getX()+2);
             }
             }
+        
         if(teclado.derecha){
+                    camara();
         this.visual.getPersonaje().setX(this.visual.getPersonaje().getX()+2);
-        this.visual.caminar();
-        System.out.println("DERECHA");
-            if(colisionar()){
+        this.visual.caminar();  
+
+        if(colisionar()){
                 this.visual.getPersonaje().setX(this.visual.getPersonaje().getX()-2);
             }
+            if(this.intersectaenemigo){
+                this.visual.getMoneda().setFoto(null);
+            }
+
         }
         this.aps++;
-        this.visual.repaint();
+                while(!colisionar()){
+        this.visual.getPersonaje().setY(this.visual.getPersonaje().getY()+1);
         }
+        this.visual.getPersonaje().setY(this.visual.getPersonaje().getY()-1);
+        for (int i = 0; i < 100; i++) {
+            this.visual.repaint();
+        }
+
+    }
     
     
         public void mostrar(){

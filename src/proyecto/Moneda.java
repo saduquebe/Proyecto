@@ -10,14 +10,14 @@ import java.awt.Toolkit;
 
 /**
  *
- * @author User
+ * @author Santiago
  */
-public class Enemigo extends Ente{
+public class Moneda extends Ente {
     private Image foto;
-    private int contadorframes=1;
-    public Enemigo(int x, int y) {
+    private int Xsprite=0;
+    public Moneda(int x, int y) {
         super(x, y);
-        this.foto= Toolkit.getDefaultToolkit().getImage("frame-1.png");
+        this.foto=Toolkit.getDefaultToolkit().getImage("Full Coins.png");
     }
 
     public Image getFoto() {
@@ -28,14 +28,12 @@ public class Enemigo extends Ente{
         this.foto = foto;
     }
 
-    public int getContadorframes() {
-        return contadorframes;
+    public int getXsprite() {
+        return Xsprite;
     }
 
-    public void setContadorframes(int contadorframes) {
-        this.contadorframes = contadorframes;
+    public void setXsprite(int Xsprite) {
+        this.Xsprite = Xsprite;
     }
-    
-
     
 }

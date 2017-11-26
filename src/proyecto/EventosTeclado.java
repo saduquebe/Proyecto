@@ -21,8 +21,14 @@ public boolean abajo;
 public boolean izquierda;
 public boolean derecha;
 
+//Esto lo hago solamente por que tuve problemas con el KeyType
+
+public int space;
+
+
     public EventosTeclado() {
         this.keys = new boolean[teclas];
+        this.space= 0;
     }
 
 public void actualizar(){
@@ -35,13 +41,28 @@ public void actualizar(){
     @Override
     public void keyReleased(KeyEvent e) {
      this.keys[e.getKeyCode()]=false;
+        if(e.getKeyCode() == 32){
+            this.space=9999;
+        } 
+        else {
+        }
+        
     }
         @Override
     public void keyPressed(KeyEvent e) {
         this.keys[e.getKeyCode()]=true;
+        if(e.getKeyCode() == 32){
+            this.space++;
+        } 
+        else {
+            this.space=0;
+        }
+        
+        
     }
+    
+    //CAMILO
     @Override
     public void keyTyped(KeyEvent e) {
-
     }
 }

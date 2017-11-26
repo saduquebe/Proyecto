@@ -8,162 +8,104 @@ package proyecto;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.Timer;
 
 /**
  *
  * @author User
  */
-public class Vista extends JFrame implements Runnable {
-private boolean Running=false;
-private int aps=0;
-private int fps=0;
+public class Vista extends JPanel implements ActionListener {
+    private Personaje personaje;
+private Timer timer;
+private Moneda moneda;
 private EventosTeclado teclado;
-private Visual visual;
 private Mapa mapa;
-private int contadornuevo=0;
-private int colisiones=0;
-private boolean intersectaenemigo=false;
+private boolean choca=false;
     public Vista() {
+        this.timer= new Timer(20,this);
+        this.moneda= new Moneda(650,480);
+        this.personaje= new Personaje(0,625);
         this.teclado = new EventosTeclado();
-        this.visual=new Visual();
         this.mapa= new Mapa();
         addKeyListener(this.teclado);
         setFocusable(true);
+        this.timer.start();
     }
+@Override
+    protected void paintComponent(Graphics g) {
+    super.paintComponent(g);
+                g.drawImage(this.mapa.getFoto(),this.mapa.getX(),this.mapa.getY(),this);
+                g.drawImage(this.personaje.getImagen(),this.personaje.getX(),this.personaje.getY()-10,
+                            this.personaje.getX()+92,this.personaje.getY()+100,
+                            (this.personaje.getXsprite()*46),(this.personaje.getYsprite()*50),
+                            ((this.personaje.getXsprite()*46)+46),((this.personaje.getYsprite()*50)+50),this);  
+                
 
-    public void iniciar(){
-        this.setVisible(true);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(new Dimension(1920,1080));
-        this.Running=true;
-}
-
-    public boolean colisionar(){
-        boolean si=false;
-        this.visual.getMoneda().setBordes(new Rectangle(this.visual.getMoneda().getX(),this.visual.getMoneda().getY(),
-        this.visual.getMoneda().getX()+16,
-                this.visual.getMoneda().getY()+16));
-        this.visual.getPersonaje().setBordes(new Rectangle(this.visual.getPersonaje().getX()+20,
-                this.visual.getPersonaje().getY()-10,55,100));
-    for (Rectangle borde : this.mapa.getBordes()) {
-        if (this.visual.getPersonaje().getBordes().intersects(borde)) {
-            this.colisiones++;
-            si=true;    
+                g.drawImage(this.moneda.getFoto(),this.moneda.getX(),this.moneda.getY(),this.moneda.getX()+32,
+                             this.moneda.getY()+32,(16*this.moneda.getXsprite()),0,(16+(this.moneda.getXsprite()*16)),
+                             16,this);
+                
+    }
+        public boolean colisionar(){
+                    this.mapa.bordes();
+                   for (int i = 0; i < this.mapa.getBordes().length; i++) {
+                        if(this.mapa.getBordes()[i].intersects(new Rectangle(this.personaje.getX(),this.personaje.getY(),80,95))){
+                            this.choca=true;
+                        }            
+            }
+                    return this.choca;
         }
-    }
-        if(this.visual.getPersonaje().getBordes().intersects(this.visual.getMoneda().getBordes())) {
-            this.intersectaenemigo=true;
-        }
-        return si;
-    }
-    public void camara(){
-
-        if(this.visual.getPersonaje().getX()>=0){
-            this.mapa.bordes();
-            this.mapa.setX(this.mapa.getX()-2);
-            this.visual.getMoneda().setX(this.visual.getMoneda().getX()-2);
-        }
-
-    }
-    public void actualizar(){ 
+        public void actualizar(){
         teclado.actualizar();
-
-        this.visual.moneda();
-        this.visual.enemigo();
         if(!teclado.arriba&&!teclado.abajo&&!teclado.izquierda&&!teclado.derecha){
-            this.visual.getPersonaje().setXsprite(0);
-            this.visual.getPersonaje().setYsprite(0);
+            this.personaje.setXsprite(0);
+            this.personaje.setYsprite(0);
         }
         if(teclado.arriba){
-            this.visual.getPersonaje().setY(this.visual.getPersonaje().getY()-70);
-            if(colisionar()){
-            this.visual.getPersonaje().setY(this.visual.getPersonaje().getY()+2);
-            }
+            System.out.println("ARRIBA");
+            this.personaje.setY(this.personaje.getY()-10);
         }
         
         if(teclado.abajo){
-        
-        this.visual.getPersonaje().setXsprite(1);
-        this.visual.getPersonaje().setYsprite(2);
-        this.visual.getPersonaje().setX(this.visual.getPersonaje().getX()+2);
-        System.out.println(this.visual.getPersonaje().getY());
-        System.out.println(this.visual.getPersonaje().getX());
-        if((colisionar())&&(this.colisiones>2)){
-        this.visual.getPersonaje().setY(this.visual.getPersonaje().getY()-2);
-        this.visual.getPersonaje().setX(this.visual.getPersonaje().getX()-2);
+        System.out.println("ABAJO");
+        this.personaje.setXsprite(1);
+        this.personaje.setYsprite(2);
+        this.personaje.setX(this.personaje.getX()+2);
+                        if(colisionar()){
+            this.personaje.setX(this.personaje.getX()-2);
         }
-
+                this.choca=false;
         }
         
         if(teclado.izquierda){  
-        this.visual.getPersonaje().setX(this.visual.getPersonaje().getX()-2);
-        this.visual.caminar();
-        if(colisionar()){
-           
-                this.visual.getPersonaje().setX(this.visual.getPersonaje().getX()+2);
-            }
+        System.out.println("IZQUIERDA");
+        this.personaje.setX(this.personaje.getX()-2);
+                if(colisionar()){
+            this.personaje.setX(this.personaje.getX()+2);
+        }
+                this.choca=false;
             }
         
         if(teclado.derecha){
-                    camara();
-        this.visual.getPersonaje().setX(this.visual.getPersonaje().getX()+2);
-        this.visual.caminar();  
-
+        this.personaje.avanzar();
+        System.out.println("DERECHA");
+        this.personaje.setX(this.personaje.getX()+2);
         if(colisionar()){
-                this.visual.getPersonaje().setX(this.visual.getPersonaje().getX()-2);
-            }
-            if(this.intersectaenemigo){
-                this.visual.getMoneda().setFoto(null);
-            }
-
+            this.personaje.setX(this.personaje.getX()-2);
         }
-        this.aps++;
-                while(!colisionar()){
-        this.visual.getPersonaje().setY(this.visual.getPersonaje().getY()+1);
+        this.choca=false;
         }
-        this.visual.getPersonaje().setY(this.visual.getPersonaje().getY()-1);
-        for (int i = 0; i < 100; i++) {
-            this.visual.repaint();
-        }
-
     }
-    
-    
-        public void mostrar(){
-        Graphics g=getGraphics();
-        visual.paintComponent(g);
-        mapa.paintComponent(g);
-        this.fps++;
-        }
+
     @Override
-    public void run() {
-        iniciar();
-        int NS_Segundo=1000000000;
-        byte APS_OBJETIVO=60;
-        double NS_Actualizacion=NS_Segundo/APS_OBJETIVO;
-        long referencia_actualizacion=System.nanoTime();
-        long referencia_contador=System.nanoTime();
-        double tiempotranscurrido;
-        double delta=0;
-        requestFocus();
-        while(this.Running){
-        long iniciobucle=System.nanoTime();
-        tiempotranscurrido=iniciobucle-referencia_actualizacion;
-        referencia_actualizacion=iniciobucle;
-        delta+=tiempotranscurrido/NS_Actualizacion;
-        while(delta>=1){
-        actualizar();    
-        delta--;
-        }
-        mostrar();
-        if(System.nanoTime()-referencia_contador>NS_Segundo){
-        this.setTitle("APS: "+this.aps+ " FPS: "+this.fps);
-        this.aps=0;
-        this.fps=0;
-        referencia_contador=System.nanoTime();
-        }
-    }   
+    public void actionPerformed(ActionEvent e) {
+        this.moneda.movermoneda();
+        actualizar();
+        repaint();
     }
     
 }

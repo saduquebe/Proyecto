@@ -26,7 +26,7 @@ public class Mapa extends JPanel{
         this.x=0;
         this.y=0;
         this.foto = Toolkit.getDefaultToolkit().getImage("fondonuevo.png");
-        this.bordes = new Rectangle[7];
+        this.bordes = new Rectangle[6];
         bordes();
     }
 
@@ -43,14 +43,12 @@ public class Mapa extends JPanel{
         Rectangle box4= new Rectangle(542+this.x,540,240,60);
         Rectangle box5= new Rectangle(782+this.x,480,240,60);
         Rectangle box6= new Rectangle(1022+this.x,480,240,240);
-        Rectangle box7= new Rectangle(0+this.x,720,3840,60);
         this.bordes[0]=box;
         this.bordes[1]=box2;
         this.bordes[2]=box3;
         this.bordes[3]=box4;
         this.bordes[4]=box5;
         this.bordes[5]=box6;
-        this.bordes[6]=box7;
         
     }
 
@@ -78,6 +76,14 @@ public class Mapa extends JPanel{
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public Image getFoto() {
+        return foto;
+    }
+
+    public void setFoto(Image foto) {
+        this.foto = foto;
     }
     
 }

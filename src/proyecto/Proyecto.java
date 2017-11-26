@@ -5,19 +5,27 @@
  */
 package proyecto;
 
+import java.awt.Dimension;
+import javax.swing.JFrame;
+
 /**
  *
  * @author User
  */
-public class Proyecto {
+public class Proyecto extends JFrame {
 
-    /**
-     * @param args the command line arguments
-     */
+public Proyecto(){
+    Iniciar();
+}
     public static void main(String[] args) {
-        Vista vista= new Vista();  
-        Thread iniciar= new Thread(vista);
-        iniciar.start(); 
+        Proyecto proyecto= new Proyecto();
+        proyecto.setVisible(true);
+    }
+
+    private void Iniciar() {
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setSize(new Dimension(1920,1080));
+        this.add(new Vista());
     }
     
 }

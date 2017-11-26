@@ -15,6 +15,7 @@ import java.awt.Toolkit;
  */
 public class Personaje extends Ente{
     private int auxx;
+    private int contador=0;
     private int xsprite;
     private int ysprite;
     private Image imagen;
@@ -25,7 +26,20 @@ public class Personaje extends Ente{
         this.ysprite=0;
         this.imagen=Toolkit.getDefaultToolkit().getImage("player-spritemap-v9.png");
     }
-
+    public void avanzar(){
+        if(contador==2){
+        this.ysprite=3;
+        if(this.xsprite<7){
+        this.xsprite=this.xsprite+1;
+        }
+        else{
+            this.xsprite=0;
+            
+        }
+        contador=0;
+        }
+        else{contador++;}
+    }
 
     public Image getImagen() {
         return imagen;

@@ -62,7 +62,6 @@ public class Vista extends JPanel implements ActionListener {
                 this.personaje.getX() + 92, this.personaje.getY() + 100,
                 (this.personaje.getXsprite() * 46), (this.personaje.getYsprite() * 50),
                 ((this.personaje.getXsprite() * 46) + 46), ((this.personaje.getYsprite() * 50) + 50), this);
-        g.drawRect(this.personaje.getX()+22, this.personaje.getY(), 50, 95);
     }
 
     public void camara() {

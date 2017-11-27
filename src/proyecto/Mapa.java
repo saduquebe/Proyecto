@@ -28,9 +28,9 @@ public class Mapa {
         this.x=0;
         this.y=0;
         this.foto = Toolkit.getDefaultToolkit().getImage("layer-1.png");
-        this.bordescajas = new Rectangle[16];
+        this.bordescajas = new Rectangle[42];
         this.bordesmonedas= new Rectangle[20];
-        this.cajas= new Caja[15];
+        this.cajas= new Caja[41];
         this.monedas= new Moneda[20];
         cajas();
         monedas();
@@ -41,10 +41,10 @@ public class Mapa {
         for (int i = 0; i < this.monedas.length; i++) {
             this.bordesmonedas[i]=new Rectangle(this.monedas[i].getX()+this.x,this.monedas[i].getY(),32,32);
         }
-        for (int i = 0; i < 15; i++) {
-            this.bordescajas[i]=new Rectangle(this.cajas[i].getX()+this.x,this.cajas[i].getY(),55,60);
+        for (int i = 0; i < this.bordescajas.length-1; i++) {
+            this.bordescajas[i]=new Rectangle(this.cajas[i].getX()+this.x,this.cajas[i].getY(),60,60);
         }
-        this.bordescajas[15]=new Rectangle(0,725,1920,1);
+        this.bordescajas[this.bordescajas.length]=new Rectangle(0,725,1920,1);
     }
     public void cajas(){
         this.cajas[0]=new Caja(258+this.x,661);
@@ -62,6 +62,32 @@ public class Mapa {
         this.cajas[12]=new Caja(662+this.x,540);
         this.cajas[13]=new Caja(782+this.x,660);
         this.cajas[14]=new Caja(962+this.x,660);
+        this.cajas[15]=new Caja(1022+this.x,600);
+        this.cajas[16]=new Caja(1082+this.x,540);
+        this.cajas[17]=new Caja(1142+this.x,480);
+        this.cajas[18]=new Caja(1142+this.x,540);
+        this.cajas[19]=new Caja(1142+this.x,600);
+        this.cajas[20]=new Caja(1142+this.x,660);
+        this.cajas[21]=new Caja(1322+this.x,480);
+        this.cajas[22]=new Caja(1442+this.x,480);
+        this.cajas[23]=new Caja(1562+this.x,480);
+        this.cajas[24]=new Caja(1742+this.x,480);
+        this.cajas[25]=new Caja(1982+this.x,480);
+        this.cajas[26]=new Caja(1322+this.x,540);
+        this.cajas[27]=new Caja(1322+this.x,600);
+        this.cajas[28]=new Caja(1322+this.x,660);
+        this.cajas[29]=new Caja(1442+this.x,540);
+        this.cajas[30]=new Caja(1442+this.x,600);
+        this.cajas[31]=new Caja(1442+this.x,660);
+        this.cajas[32]=new Caja(1562+this.x,540);
+        this.cajas[33]=new Caja(1562+this.x,600);
+        this.cajas[34]=new Caja(1562+this.x,660);
+        this.cajas[35]=new Caja(1742+this.x,540);
+        this.cajas[36]=new Caja(1742+this.x,600);
+        this.cajas[37]=new Caja(1742+this.x,660);
+        this.cajas[28]=new Caja(1982+this.x,540);
+        this.cajas[29]=new Caja(1982+this.x,600);
+        this.cajas[40]=new Caja(1982+this.x,660);
     }
     public void monedas(){
         this.monedas[0]= new Moneda(625,550);

@@ -18,6 +18,7 @@ public class Personaje extends Ente{
     private int contador=0;
     private int xsprite;
     private int ysprite;
+    private Rectangle bordes;
     private Image imagen;
     public Personaje(int x, int y) {
         super(x, y);
@@ -25,6 +26,7 @@ public class Personaje extends Ente{
         this.xsprite=0;
         this.ysprite=0;
         this.imagen=Toolkit.getDefaultToolkit().getImage("player-spritemap-v9.png");
+        this.bordes= new Rectangle(this.getX(),this.getY(),80,95);
     }
     public void avanzar(){
         if(contador==2){
@@ -63,6 +65,14 @@ public class Personaje extends Ente{
 
     public void setYsprite(int ysprite) {
         this.ysprite = ysprite;
+    }
+
+    public Rectangle getBordes() {
+        return bordes;
+    }
+
+    public void setBordes(Rectangle bordes) {
+        this.bordes = bordes;
     }
     
     

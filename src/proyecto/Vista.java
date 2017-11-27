@@ -25,11 +25,11 @@ public class Vista extends JPanel implements ActionListener {
     private Moneda moneda;
     private EventosTeclado teclado;
     private Mapa mapa;
+    private int base=625;
     private boolean choca = false;
     private int altura;
     private int alturaInicial;
     private int saltoEstado;
-
     public Vista() {
         this.timer = new Timer(20, this);
         this.moneda = new Moneda(650, 480);
@@ -47,33 +47,50 @@ public class Vista extends JPanel implements ActionListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(this.mapa.getFoto(), this.mapa.getX(), this.mapa.getY(), this);
+        for (Caja caja :this.mapa.getCajas()) {
+            g.drawImage(caja.getFoto(),caja.getX()+this.mapa.getX(),caja.getY(), this);
+        }
+       
         g.drawImage(this.personaje.getImagen(), this.personaje.getX(), this.personaje.getY() - 10,
                 this.personaje.getX() + 92, this.personaje.getY() + 100,
                 (this.personaje.getXsprite() * 46), (this.personaje.getYsprite() * 50),
                 ((this.personaje.getXsprite() * 46) + 46), ((this.personaje.getYsprite() * 50) + 50), this);
 
-        g.drawImage(this.moneda.getFoto(), this.moneda.getX(), this.moneda.getY(), this.moneda.getX() + 32,
+        g.drawImage(this.moneda.getFoto(), this.moneda.getX()+this.mapa.getX(), this.moneda.getY(),this.moneda.getX()+this.mapa.getX() + 32,
                 this.moneda.getY() + 32, (16 * this.moneda.getXsprite()), 0, (16 + (this.moneda.getXsprite() * 16)),
                 16, this);
 
     }
-
+    public void camara(){
+        this.mapa.setX(this.mapa.getX()-1);
+    }
     public boolean colisionar() {
         this.mapa.bordes();
+        this.moneda.setBordes(new Rectangle(this.moneda.getX()+this.mapa.getX(), this.moneda.getY(),32,32));
+        this.personaje.setBordes(new Rectangle(this.personaje.getX(),this.personaje.getY(),85,95));
         for (int i = 0; i < this.mapa.getBordes().length; i++) {
-            if (this.mapa.getBordes()[i].intersects(new Rectangle(this.personaje.getX(), this.personaje.getY(), 80, 95))) {
+            if (this.mapa.getBordes()[i].intersects(this.personaje.getBordes())) {
                 this.choca = true;
             }
         }
+        if(this.personaje.getBordes().intersects(this.moneda.getBordes())){
+            this.moneda.setFoto(null);
+            this.moneda.setBordes(new Rectangle(0,0,0,0));
+        }
         return this.choca;
     }
-
+    public void gravedad(){
+      while(!colisionar()){
+         this.personaje.setY(this.personaje.getY()+1);
+      }
+      this.personaje.setY(this.personaje.getY()-1);
+    }
     public void actualizar() {
-        teclado.actualizar();
-        if (!teclado.arriba && !teclado.abajo && !teclado.izquierda && !teclado.derecha) {
-            this.personaje.setXsprite(0);
+         teclado.actualizar();
+        if (!teclado.abajo && !teclado.izquierda && !teclado.derecha) {
+           this.personaje.setXsprite(0);
             this.personaje.setYsprite(0);
-        }
+       }
 //        if(teclado.arriba){
 //            System.out.println("ARRIBA");
 //            this.personaje.setY(this.personaje.getY()-10);
@@ -96,6 +113,9 @@ public class Vista extends JPanel implements ActionListener {
             if (colisionar()) {
                 this.personaje.setX(this.personaje.getX() + 2);
             }
+            else{
+                gravedad();
+            }
             this.choca = false;
         }
 
@@ -106,22 +126,30 @@ public class Vista extends JPanel implements ActionListener {
             if (colisionar()) {
                 this.personaje.setX(this.personaje.getX() - 2);
             }
+            else{
+            gravedad();
+            camara();
+            }
             this.choca = false;
         }
-
-        
-
         //SALTO
-        if (saltoEstado == 0) { //Si el estado es cero revisa si el La tecla salto fue activada, 
-            if (teclado.space == 9999) { 
-                teclado.space = 0; //Devolvemos la variable space a 0 para saber que ya tomamos ese salto
+         //Si el estado es cero revisa si el La tecla salto fue activada, 
+            if (teclado.space==9999) { 
+                if (saltoEstado == 0) {
+                if(!colisionar()){
+                if(this.personaje.getY()<this.base){
+                this.personaje.setY(this.personaje.getY()+1);
+                }
+                }
+                teclado.space =0; //Devolvemos la variable space a 0 para saber que ya tomamos ese salto
                 saltoEstado=1; //Iniciamos el salto
                 alturaInicial = this.personaje.getY(); // Capturamos la altura del personaje cuando inicia el salto
             }
-            else{}
         } else {
             if (saltoEstado == 1) {
-                if (altura <= 100) { // Si no se ah llegado al limite del salto, sigue saltando
+                this.personaje.setXsprite(7);
+                this.personaje.setYsprite(0);
+                if (altura <= 85) { // Si no se ah llegado al limite del salto, sigue saltando
                     altura = altura + 4; //Aumentamo la altura
                     this.personaje.setY(alturaInicial - altura); //Moficiacmos
                 } else {
@@ -129,18 +157,23 @@ public class Vista extends JPanel implements ActionListener {
                 }
             } else {
                 if (saltoEstado == 2) { 
-                    if (altura > 0) { //Si esta bajando y aun no ha vuelto a la posicion inicial, lo seguimos bajando
+                    if (altura > 0) {
+                         //Si esta bajando y aun no ha vuelto a la posicion inicial, lo seguimos bajando
                         altura = altura - 4;
                         this.personaje.setY(alturaInicial - altura);
-
+                        if(colisionar()){
+                            altura=0;
+                            this.personaje.setY(this.personaje.getY()-4);
+                            
+                        }
                     } else { //Si ya bajo, lo mismo que habia subido, acabamos el salto
                         saltoEstado = 0;
                     }
+                    
                 }
             }
         }
     }
-    
     @Override
         public void actionPerformed(ActionEvent e) {
         this.moneda.movermoneda();

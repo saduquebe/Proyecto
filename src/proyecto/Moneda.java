@@ -6,6 +6,7 @@
 package proyecto;
 
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 
 /**
@@ -16,9 +17,11 @@ public class Moneda extends Ente {
     private Image foto;
     private int contador=0;
     private int Xsprite=0;
+    private Rectangle bordes;
     public Moneda(int x, int y) {
         super(x, y);
         this.foto=Toolkit.getDefaultToolkit().getImage("Full Coins.png");
+        this.bordes= new Rectangle(this.getX(),this.getY(),32,32);
     }
 
     public Image getFoto() {
@@ -49,4 +52,13 @@ public class Moneda extends Ente {
         }
         else{contador++;}
     }
+
+    public Rectangle getBordes() {
+        return bordes;
+    }
+
+    public void setBordes(Rectangle bordes) {
+        this.bordes = bordes;
+    }
+            
 }

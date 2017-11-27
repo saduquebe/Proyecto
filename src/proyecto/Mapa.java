@@ -16,40 +16,44 @@ import javax.swing.JPanel;
  *
  * @author User
  */
-public class Mapa extends JPanel{
+public class Mapa {
     private int x;
     private int y;
     private Image foto;
     private Rectangle[] bordes;
-
+    private Caja[] cajas;
     public Mapa() {
         this.x=0;
         this.y=0;
-        this.foto = Toolkit.getDefaultToolkit().getImage("fondonuevo.png");
-        this.bordes = new Rectangle[6];
+        this.foto = Toolkit.getDefaultToolkit().getImage("layer-1.png");
+        this.bordes = new Rectangle[16];
+        this.cajas= new Caja[15];
+        cajas();
         bordes();
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g); 
-        bordes();
-        g.drawImage(this.foto,this.x,this.y, this);
-    }
     public void bordes(){
-        Rectangle box = new Rectangle(258+this.x,661,180,60);
-        Rectangle box2= new Rectangle(318+this.x,601,120,60);
-        Rectangle box3= new Rectangle(378+this.x,541,60,60);
-        Rectangle box4= new Rectangle(542+this.x,540,240,60);
-        Rectangle box5= new Rectangle(782+this.x,480,240,60);
-        Rectangle box6= new Rectangle(1022+this.x,480,240,240);
-        this.bordes[0]=box;
-        this.bordes[1]=box2;
-        this.bordes[2]=box3;
-        this.bordes[3]=box4;
-        this.bordes[4]=box5;
-        this.bordes[5]=box6;
-        
+        for (int i = 0; i < 15; i++) {
+            this.bordes[i]=new Rectangle(this.cajas[i].getX()+this.x,this.cajas[i].getY(),60,60);
+        }
+        this.bordes[15]=new Rectangle(0,725,1920,1);
+    }
+    public void cajas(){
+        this.cajas[0]=new Caja(258+this.x,661);
+        this.cajas[1]=new Caja(318+this.x,601);
+        this.cajas[2]=new Caja(378+this.x,541);
+        this.cajas[3]=new Caja(542+this.x,660);
+        this.cajas[4]=new Caja(902+this.x,660);
+        this.cajas[5]=new Caja(1022+this.x,660);
+        this.cajas[6]=new Caja(602+this.x,660);
+        this.cajas[7]=new Caja(662+this.x,660);
+        this.cajas[8]=new Caja(722+this.x,660);
+        this.cajas[9]=new Caja(722+this.x,600);
+        this.cajas[10]=new Caja(602+this.x,600);
+        this.cajas[11]=new Caja(662+this.x,600);
+        this.cajas[12]=new Caja(662+this.x,540);
+        this.cajas[13]=new Caja(782+this.x,660);
+        this.cajas[14]=new Caja(962+this.x,660);
     }
 
     public Rectangle[] getBordes() {
@@ -84,6 +88,14 @@ public class Mapa extends JPanel{
 
     public void setFoto(Image foto) {
         this.foto = foto;
+    }
+
+    public Caja[] getCajas() {
+        return cajas;
+    }
+
+    public void setCajas(Caja[] cajas) {
+        this.cajas = cajas;
     }
     
 }

@@ -14,7 +14,6 @@ import java.awt.Rectangle;
 public class Ente {
     private int x;
     private int y;
-    private Rectangle bordes;
 
     public Ente(int x, int y) {
         this.x = x;
@@ -35,14 +34,6 @@ public class Ente {
 
     public void setY(int y) {
         this.y = y;
-    }
-
-    public Rectangle getBordes() {
-        return bordes;
-    }
-
-    public void setBordes(Rectangle bordes) {
-        this.bordes = bordes;
     }
 
 }

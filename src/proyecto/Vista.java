@@ -49,6 +49,9 @@ public class Vista extends JPanel implements ActionListener {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        for (int i = 0; i < this.mapa.getBordescajas().length; i++) {
+            g.drawRect((int)this.mapa.getBordescajas()[i].getX(),(int) this.mapa.getBordescajas()[i].getY(),(int)this.mapa.getBordescajas()[i].getWidth(),(int)this.mapa.getBordescajas()[i].getHeight());
+        }
         g.drawImage(this.mapa.getFoto(), this.mapa.getX(), this.mapa.getY(), this);
         g.setColor(Color.white);
         g.drawString(String.valueOf(this.puntaje), 500, 20);
@@ -94,43 +97,38 @@ public class Vista extends JPanel implements ActionListener {
     }
 
     public void colisionar02() {
-        boolean boolAux = false;
+        boolean dentro = false;
         int alturaAux = 0;
-        //CAMILO
         for (int i = 0; i < this.mapa.getBordescajas().length - 1; i++) {
             int xCajaMin = (int) this.mapa.getBordescajas()[i].getX();
-            int xCajaMax = xCajaMin + 60;
-            System.out.println("------------------------------------------------------------------------------------------------------------------");
-            System.out.println(xCajaMin);
-            System.out.println(xCajaMax);
-            System.out.println(personaje.getX());
+            int xCajaMax = xCajaMin+60 ;
             if ((this.personaje.getX() > xCajaMin) && (this.personaje.getX()< xCajaMax)) {
-                boolAux = true;
-                alturaAux = (int) this.mapa.getBordescajas()[i].getY();
-                System.out.println("Caja: " + i + " Altura maxima: " + alturaAux);
-                i = 20;
-
+                dentro = true;
+                alturaAux = (int) this.mapa.getBordescajas()[i].getY()-285;
+                i=100;
             }
         }
-        System.out.println("***************************************************************");
-        if (boolAux) {
+        if (dentro) {
             this.choca02 = true;
             this.alturaMinima = alturaAux;
         } else {
             this.choca02 = false;
-            this.alturaMinima = 0;
+            this.alturaMinima =625;
         }
     }
 
     public void gravedad() {
         this.colisionar02();
+        if((!colisionar())&&(!choca02)){
+           this.personaje.setY(this.personaje.getY() + 1);
+        }
         if ((choca02) && (saltoEstado == 0) && (this.personaje.getY() < (alturaMinima))) {
             this.personaje.setY(this.personaje.getY() + 1);
-        } else {
-            if ((!choca02) && (saltoEstado == 0) && (this.personaje.getY() < (625))) {
+        } else if ((!colisionar())&&(!choca02) && (saltoEstado == 0) && (this.personaje.getY() < alturaMinima)) {
                 this.personaje.setY(this.personaje.getY() + 1);
             }
-        }
+        if(colisionar()){
+                 this.personaje.setY(this.personaje.getY() - 1);}
     }
 
     public void actualizar() {
@@ -152,6 +150,7 @@ public class Vista extends JPanel implements ActionListener {
             if (colisionar()) {
                 this.personaje.setX(this.personaje.getX() - 2);
             }
+
             this.choca = false;
         }
 
@@ -161,7 +160,6 @@ public class Vista extends JPanel implements ActionListener {
             this.personaje.setX(this.personaje.getX() - 2);
             if (colisionar()) {
                 this.personaje.setX(this.personaje.getX() + 2);
-            } else {
             }
 
             this.choca = false;
@@ -178,7 +176,7 @@ public class Vista extends JPanel implements ActionListener {
             }
             this.choca = false;
         }
-        this.gravedad();
+
 
         //SALTO
         //Si el estado es cero revisa si el La tecla salto fue activada, 
@@ -221,6 +219,7 @@ public class Vista extends JPanel implements ActionListener {
                 }
             }
         }
+                    this.gravedad();
     }
 
     @Override

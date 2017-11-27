@@ -76,7 +76,7 @@ public class Vista extends JPanel implements ActionListener {
         for (Moneda moneda : this.mapa.getMonedas()) {
             moneda.setBordes(new Rectangle(moneda.getX() + this.mapa.getX(), moneda.getY(), 32, 32));
         }
-        for (int i = 0; i < this.mapa.getBordescajas().length-1; i++) {
+        for (int i = 0; i < this.mapa.getBordescajas().length; i++) {
             if (this.mapa.getBordescajas()[i].intersects(this.personaje.getBordes())) {
                 this.choca = true;
             }
@@ -174,13 +174,17 @@ public class Vista extends JPanel implements ActionListener {
                         }
                     } else { //Si ya bajo, lo mismo que habia subido, acabamos el salto
                         saltoEstado = 0;
-                                            while (colisionar()) {
-                        this.personaje.setY(this.personaje.getY() - 1);
-                }
                         }
                     }
 
+            if(this.saltoEstado==0){
+                if(!colisionar()&&(this.personaje.getY()<624)){
+                     this.personaje.setY(this.personaje.getY() +4);
+                } if(colisionar()){
+                    this.personaje.setY(this.personaje.getY()-3);
                 }
+            }
+    }
            
 
         

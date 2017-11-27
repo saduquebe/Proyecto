@@ -15,7 +15,8 @@ import java.awt.Toolkit;
  */
 public class Personaje extends Ente{
     private int auxx;
-    private int contador=0;
+    private int contadora=0;
+    private int contadorb=0;
     private int xsprite;
     private int ysprite;
     private Rectangle bordes;
@@ -29,7 +30,7 @@ public class Personaje extends Ente{
         this.bordes= new Rectangle(this.getX(),this.getY(),80,95);
     }
     public void avanzar(){
-        if(contador==2){
+        if(contadora==2){
         this.ysprite=3;
         if(this.xsprite<7){
         this.xsprite=this.xsprite+1;
@@ -38,11 +39,24 @@ public class Personaje extends Ente{
             this.xsprite=0;
             
         }
-        contador=0;
+        contadora=0;
         }
-        else{contador++;}
+        else{contadora++;}
     }
-
+    public void retroceder(){
+        if(contadorb==2){
+        this.ysprite=3;
+        if((this.xsprite<=7)&&(this.xsprite>=0)){
+        this.xsprite=this.xsprite-1;
+        }
+        else{
+            this.xsprite=7;
+            
+        }
+        contadorb=0;
+        }
+        else{contadorb++;}
+    }
     public Image getImagen() {
         return imagen;
     }

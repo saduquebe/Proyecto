@@ -108,6 +108,7 @@ public class Vista extends JPanel implements ActionListener {
         }
 
         if (teclado.izquierda) {
+            this.personaje.retroceder();
             System.out.println("IZQUIERDA");
             this.personaje.setX(this.personaje.getX() - 2);
             if (colisionar()) {

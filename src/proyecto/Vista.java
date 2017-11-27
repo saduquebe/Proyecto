@@ -5,6 +5,7 @@
  */
 package proyecto;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -22,9 +23,9 @@ public class Vista extends JPanel implements ActionListener {
 
     private Personaje personaje;
     private Timer timer;
-    private Moneda moneda;
     private EventosTeclado teclado;
     private Mapa mapa;
+    private int puntaje=0;
     private int base=625;
     private boolean choca = false;
     private int altura;
@@ -32,7 +33,6 @@ public class Vista extends JPanel implements ActionListener {
     private int saltoEstado;
     public Vista() {
         this.timer = new Timer(20, this);
-        this.moneda = new Moneda(650, 480);
         this.personaje = new Personaje(0, 625);
         this.teclado = new EventosTeclado();
         this.mapa = new Mapa();
@@ -47,18 +47,20 @@ public class Vista extends JPanel implements ActionListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(this.mapa.getFoto(), this.mapa.getX(), this.mapa.getY(), this);
+        g.setColor(Color.white);
+        g.drawString(String.valueOf(this.puntaje), 500,20);
         for (Caja caja :this.mapa.getCajas()) {
             g.drawImage(caja.getFoto(),caja.getX()+this.mapa.getX(),caja.getY(), this);
         }
-       
+        for (Moneda moneda : this.mapa.getMonedas()) {
+            g.drawImage(moneda.getFoto(),moneda.getX()+this.mapa.getX(), moneda.getY(),moneda.getX()+this.mapa.getX() + 32,
+                moneda.getY() + 32, (16 * moneda.getXsprite()), 0, (16 + (moneda.getXsprite() * 16)),
+                16, this);
+        }
         g.drawImage(this.personaje.getImagen(), this.personaje.getX(), this.personaje.getY() - 10,
                 this.personaje.getX() + 92, this.personaje.getY() + 100,
                 (this.personaje.getXsprite() * 46), (this.personaje.getYsprite() * 50),
                 ((this.personaje.getXsprite() * 46) + 46), ((this.personaje.getYsprite() * 50) + 50), this);
-
-        g.drawImage(this.moneda.getFoto(), this.moneda.getX()+this.mapa.getX(), this.moneda.getY(),this.moneda.getX()+this.mapa.getX() + 32,
-                this.moneda.getY() + 32, (16 * this.moneda.getXsprite()), 0, (16 + (this.moneda.getXsprite() * 16)),
-                16, this);
 
     }
     public void camara(){
@@ -66,16 +68,22 @@ public class Vista extends JPanel implements ActionListener {
     }
     public boolean colisionar() {
         this.mapa.bordes();
-        this.moneda.setBordes(new Rectangle(this.moneda.getX()+this.mapa.getX(), this.moneda.getY(),32,32));
+        for (Moneda moneda :this.mapa.getMonedas()) {
+        moneda.setBordes(new Rectangle(moneda.getX()+this.mapa.getX(),moneda.getY(),32,32));
+        }
         this.personaje.setBordes(new Rectangle(this.personaje.getX(),this.personaje.getY(),85,95));
-        for (int i = 0; i < this.mapa.getBordes().length; i++) {
-            if (this.mapa.getBordes()[i].intersects(this.personaje.getBordes())) {
+        for (int i = 0; i < this.mapa.getBordescajas().length; i++) {
+            if (this.mapa.getBordescajas()[i].intersects(this.personaje.getBordes())) {
                 this.choca = true;
             }
         }
-        if(this.personaje.getBordes().intersects(this.moneda.getBordes())){
-            this.moneda.setFoto(null);
-            this.moneda.setBordes(new Rectangle(0,0,0,0));
+        for (int i = 0; i < this.mapa.getBordesmonedas().length; i++) {
+        if(this.personaje.getBordes().intersects(this.mapa.getBordesmonedas()[i])){
+            this.mapa.getMonedas()[i].setFoto(null);
+            this.mapa.getMonedas()[i].setX(0);
+            this.mapa.getMonedas()[i].setY(0);
+            this.puntaje++;
+        }
         }
         return this.choca;
     }
@@ -117,6 +125,9 @@ public class Vista extends JPanel implements ActionListener {
             else{
                 gravedad();
             }
+            System.out.println(this.personaje.getX());
+            System.out.println(this.personaje.getY());
+            
             this.choca = false;
         }
 
@@ -131,6 +142,8 @@ public class Vista extends JPanel implements ActionListener {
             gravedad();
             camara();
             }
+            System.out.println(this.personaje.getX());
+            System.out.println(this.personaje.getY());
             this.choca = false;
         }
         //SALTO
@@ -177,7 +190,9 @@ public class Vista extends JPanel implements ActionListener {
     }
     @Override
         public void actionPerformed(ActionEvent e) {
-        this.moneda.movermoneda();
+            for (int i = 0; i < this.mapa.getMonedas().length; i++) {  
+        this.mapa.getMonedas()[i].movermoneda();
+            }
         actualizar();
         repaint();
     }

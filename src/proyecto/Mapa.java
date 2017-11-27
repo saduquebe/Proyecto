@@ -48,6 +48,7 @@ public class Mapa {
     }
     public void cajas(){
         this.cajas[0]=new Caja(258+this.x,661);
+        this.cajas[1]=new Caja(318+this.x,601);
         this.cajas[2]=new Caja(378+this.x,541);
         this.cajas[3]=new Caja(542+this.x,660);
         this.cajas[4]=new Caja(902+this.x,660);

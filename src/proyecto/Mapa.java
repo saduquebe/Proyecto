@@ -42,7 +42,7 @@ public class Mapa {
             this.bordesmonedas[i]=new Rectangle(this.monedas[i].getX()+this.x,this.monedas[i].getY(),32,32);
         }
         for (int i = 0; i < 15; i++) {
-            this.bordescajas[i]=new Rectangle(this.cajas[i].getX()+this.x,this.cajas[i].getY(),60,60);
+            this.bordescajas[i]=new Rectangle(this.cajas[i].getX()+this.x,this.cajas[i].getY(),55,60);
         }
         this.bordescajas[15]=new Rectangle(0,725,1920,1);
     }

@@ -5,13 +5,10 @@
  */
 package proyecto;
 
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -31,7 +28,6 @@ public class Vista extends JPanel implements ActionListener {
     private int altura;
     private int alturaInicial;
     private int saltoEstado;
-    private boolean choca02 = false;
     private int alturaMinima;
 
     public Vista() {
@@ -53,7 +49,6 @@ public class Vista extends JPanel implements ActionListener {
             g.drawRect((int)this.mapa.getBordescajas()[i].getX(),(int) this.mapa.getBordescajas()[i].getY(),(int)this.mapa.getBordescajas()[i].getWidth(),(int)this.mapa.getBordescajas()[i].getHeight());
         }
         g.drawImage(this.mapa.getFoto(), this.mapa.getX(), this.mapa.getY(), this);
-        g.setColor(Color.white);
         g.drawString(String.valueOf(this.puntaje), 500, 20);
         for (Caja caja : this.mapa.getCajas()) {
             g.drawImage(caja.getFoto(), caja.getX() + this.mapa.getX(), caja.getY(), this);
@@ -67,7 +62,7 @@ public class Vista extends JPanel implements ActionListener {
                 this.personaje.getX() + 92, this.personaje.getY() + 100,
                 (this.personaje.getXsprite() * 46), (this.personaje.getYsprite() * 50),
                 ((this.personaje.getXsprite() * 46) + 46), ((this.personaje.getYsprite() * 50) + 50), this);
-
+        g.drawRect(this.personaje.getX()+22, this.personaje.getY(), 50, 95);
     }
 
     public void camara() {
@@ -75,12 +70,13 @@ public class Vista extends JPanel implements ActionListener {
     }
 
     public boolean colisionar() {
+        this.choca=false;
         this.mapa.bordes();
+        this.personaje.setBordes(new Rectangle(this.personaje.getX()+22, this.personaje.getY(), 50, 95));
         for (Moneda moneda : this.mapa.getMonedas()) {
             moneda.setBordes(new Rectangle(moneda.getX() + this.mapa.getX(), moneda.getY(), 32, 32));
         }
-        this.personaje.setBordes(new Rectangle(this.personaje.getX(), this.personaje.getY(), 85, 95));
-        for (int i = 0; i < this.mapa.getBordescajas().length; i++) {
+        for (int i = 0; i < this.mapa.getBordescajas().length-1; i++) {
             if (this.mapa.getBordescajas()[i].intersects(this.personaje.getBordes())) {
                 this.choca = true;
             }
@@ -96,41 +92,8 @@ public class Vista extends JPanel implements ActionListener {
         return this.choca;
     }
 
-    public void colisionar02() {
-        boolean dentro = false;
-        int alturaAux = 0;
-        for (int i = 0; i < this.mapa.getBordescajas().length - 1; i++) {
-            int xCajaMin = (int) this.mapa.getBordescajas()[i].getX();
-            int xCajaMax = xCajaMin+60 ;
-            if ((this.personaje.getX() > xCajaMin) && (this.personaje.getX()< xCajaMax)) {
-                dentro = true;
-                alturaAux = (int) this.mapa.getBordescajas()[i].getY()-285;
-                i=100;
-            }
-        }
-        if (dentro) {
-            this.choca02 = true;
-            this.alturaMinima = alturaAux;
-        } else {
-            this.choca02 = false;
-            this.alturaMinima =625;
-        }
-    }
 
-    public void gravedad() {
-        this.colisionar02();
-        if((!colisionar())&&(!choca02)){
-           this.personaje.setY(this.personaje.getY() + 1);
-        }
-        if ((choca02) && (saltoEstado == 0) && (this.personaje.getY() < (alturaMinima))) {
-            this.personaje.setY(this.personaje.getY() + 1);
-        } else if ((!colisionar())&&(!choca02) && (saltoEstado == 0) && (this.personaje.getY() < alturaMinima)) {
-                this.personaje.setY(this.personaje.getY() + 1);
-            }
-        if(colisionar()){
-                 this.personaje.setY(this.personaje.getY() - 1);}
-    }
-
+    
     public void actualizar() {
         teclado.actualizar();
         if (!teclado.abajo && !teclado.izquierda && !teclado.derecha) {
@@ -147,8 +110,12 @@ public class Vista extends JPanel implements ActionListener {
             this.personaje.setXsprite(1);
             this.personaje.setYsprite(2);
             this.personaje.setX(this.personaje.getX() + 2);
+            this.personaje.setY(this.personaje.getY() + 2);
+            
             if (colisionar()) {
                 this.personaje.setX(this.personaje.getX() - 2);
+                this.personaje.setY(this.personaje.getY() - 2);
+                
             }
 
             this.choca = false;
@@ -180,19 +147,15 @@ public class Vista extends JPanel implements ActionListener {
 
         //SALTO
         //Si el estado es cero revisa si el La tecla salto fue activada, 
-        if (saltoEstado == 0) {
+
             if (teclado.space == 9999) {
-                if (!colisionar()) {
-                    if (this.personaje.getY() < this.base) {
-                        this.personaje.setY(this.personaje.getY() + 1);
-                    }
-                }
+               if (saltoEstado == 0) {
+
                 teclado.space = 0; //Devolvemos la variable space a 0 para saber que ya tomamos ese salto
                 saltoEstado = 1; //Iniciamos el salto
                 alturaInicial = this.personaje.getY(); // Capturamos la altura del personaje cuando inicia el salto
             }
-        } else {
-            if (saltoEstado == 1) {
+        } else if (saltoEstado == 1) {
                 this.personaje.setXsprite(7);
                 this.personaje.setYsprite(0);
                 if (altura <= 85) { // Si no se ah llegado al limite del salto, sigue saltando
@@ -201,26 +164,26 @@ public class Vista extends JPanel implements ActionListener {
                 } else {
                     saltoEstado = 2; //Si ya esta muy alto lo comenzamos a bajar
                 }
-            } else {
-                if (saltoEstado == 2) {
+            } else if (saltoEstado == 2) {
                     if (altura > 0) {
                         //Si esta bajando y aun no ha vuelto a la posicion inicial, lo seguimos bajando
                         altura = altura - 4;
                         this.personaje.setY(alturaInicial - altura);
                         if (colisionar()) {
                             altura = 0;
-                            this.personaje.setY(this.personaje.getY() - 4);
-
                         }
                     } else { //Si ya bajo, lo mismo que habia subido, acabamos el salto
                         saltoEstado = 0;
+                                            while (colisionar()) {
+                        this.personaje.setY(this.personaje.getY() - 1);
+                }
+                        }
                     }
 
                 }
-            }
-        }
-                    this.gravedad();
-    }
+           
+
+        
 
     @Override
     public void actionPerformed(ActionEvent e) {

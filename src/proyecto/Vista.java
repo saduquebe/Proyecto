@@ -148,9 +148,9 @@ public class Vista extends JPanel implements ActionListener {
         //SALTO
         //Si el estado es cero revisa si el La tecla salto fue activada, 
 
-            if (teclado.space == 9999) {
+            
                if (saltoEstado == 0) {
-
+                   if (teclado.space == 9999) {
                 teclado.space = 0; //Devolvemos la variable space a 0 para saber que ya tomamos ese salto
                 saltoEstado = 1; //Iniciamos el salto
                 alturaInicial = this.personaje.getY(); // Capturamos la altura del personaje cuando inicia el salto
@@ -181,7 +181,7 @@ public class Vista extends JPanel implements ActionListener {
                 if(!colisionar()&&(this.personaje.getY()<624)){
                      this.personaje.setY(this.personaje.getY() +4);
                 } if(colisionar()){
-                    this.personaje.setY(this.personaje.getY()-3);
+                    this.personaje.setY(this.personaje.getY()-4);
                 }
             }
     }

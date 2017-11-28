@@ -6,9 +6,12 @@
 package proyecto;
 
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -17,11 +20,11 @@ import javax.swing.Timer;
  * @author User
  */
 public class Vista extends JPanel implements ActionListener {
-
     private Personaje personaje;
     private Timer timer;
     private EventosTeclado teclado;
     private Mapa mapa;
+    private int vidas=3;
     private int puntaje = 0;
     private int base = 625;
     private boolean choca = false;
@@ -31,7 +34,7 @@ public class Vista extends JPanel implements ActionListener {
     private int alturaMinima;
 
     public Vista() {
-        this.timer = new Timer(20, this);
+        this.timer = new Timer(10, this);
         this.personaje = new Personaje(0, 625);
         this.teclado = new EventosTeclado();
         this.mapa = new Mapa();
@@ -45,13 +48,29 @@ public class Vista extends JPanel implements ActionListener {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        for (int i = 0; i < this.mapa.getBordescajas().length; i++) {
+        Image corazon= Toolkit.getDefaultToolkit().getImage("heart.png");
+        Image monedaestatica= Toolkit.getDefaultToolkit().getImage("Full Coins.png");
+                for (int i = 0; i < this.mapa.getBordescajas().length; i++) {
             g.drawRect((int)this.mapa.getBordescajas()[i].getX(),(int) this.mapa.getBordescajas()[i].getY(),(int)this.mapa.getBordescajas()[i].getWidth(),(int)this.mapa.getBordescajas()[i].getHeight());
         }
         g.drawImage(this.mapa.getFoto(), this.mapa.getX(), this.mapa.getY(), this);
-        g.drawString(String.valueOf(this.puntaje), 500, 20);
+        g.drawString(String.valueOf(this.puntaje),930, 29);
+        g.drawImage(corazon,940,0, this);
+        g.drawImage(monedaestatica, 890, 10,922,42,0,0,16,16, this);
+        g.drawString(String.valueOf(this.vidas),985,28);
         for (Caja caja : this.mapa.getCajas()) {
             g.drawImage(caja.getFoto(), caja.getX() + this.mapa.getX(), caja.getY(), this);
+        }
+                for (int i = 0; i < this.mapa.getChuzos().length; i++) {
+            g.drawImage(this.mapa.getChuzos()[i].getFoto(), this.mapa.getChuzos()[i].getX()+this.mapa.getX(),
+                    this.mapa.getChuzos()[i].getY(), this.mapa.getChuzos()[i].getX()+this.mapa.getX()+60,this.mapa.getChuzos()[i].getY()+60,
+                    0,0,160,160,this);
+        }
+        for (int i = 0; i < (this.mapa.getPiso().length/2); i++) {
+            g.drawImage(this.mapa.getPiso()[i].getFoto(),this.mapa.getPiso()[i].getX()+this.mapa.getX(),this.mapa.getPiso()[i].getY(),this);
+        }
+         for (int i = (this.mapa.getPiso().length/2); i <this.mapa.getPiso().length; i++) {
+            g.drawImage(this.mapa.getPiso()[i].getFototierra(),this.mapa.getPiso()[i].getX()+this.mapa.getX(),this.mapa.getPiso()[i].getY(),this);
         }
         for (Moneda moneda : this.mapa.getMonedas()) {
             g.drawImage(moneda.getFoto(), moneda.getX() + this.mapa.getX(), moneda.getY(), moneda.getX() + this.mapa.getX() + 32,
@@ -70,6 +89,7 @@ public class Vista extends JPanel implements ActionListener {
 
     public boolean colisionar() {
         this.choca=false;
+        boolean bmoneda=false;
         this.mapa.bordes();
         this.personaje.setBordes(new Rectangle(this.personaje.getX()+22, this.personaje.getY(), 50, 95));
         for (Moneda moneda : this.mapa.getMonedas()) {
@@ -80,8 +100,27 @@ public class Vista extends JPanel implements ActionListener {
                 this.choca = true;
             }
         }
+        for (int i = 0; i < this.mapa.getChuzos().length; i++) {
+               if (this.mapa.getBordeschuzos()[i].intersects(this.personaje.getBordes())) {
+                   bmoneda=true;
+               }
+        }
+        if(bmoneda){
+               if(this.vidas>0){
+                this.mapa.setX(0);
+                this.personaje.setX(0);
+                this.personaje.setY(625);
+                this.vidas--;
+                   }
+                   else{
+                       JOptionPane.showMessageDialog(this,"FIN DEL JUEGO"); 
+                       this.timer.stop();
+                   }
+        }
         for (int i = 0; i < this.mapa.getBordesmonedas().length; i++) {
+             Thread sonido= new Thread(new SonidoMoneda());
             if (this.personaje.getBordes().intersects(this.mapa.getBordesmonedas()[i])) {
+                sonido.start();
                 this.mapa.getMonedas()[i].setFoto(null);
                 this.mapa.getMonedas()[i].setX(0);
                 this.mapa.getMonedas()[i].setY(0);

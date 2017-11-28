@@ -14,9 +14,11 @@ import java.awt.Toolkit;
  */
 public class Pasto extends Ente{
     private Image foto;
+    private Image fototierra;
     public Pasto(int x, int y) {
         super(x, y);
-        this.foto= Toolkit.getDefaultToolkit().getImage("");
+        this.foto= Toolkit.getDefaultToolkit().getImage("grass_128x128.png");
+        this.fototierra=Toolkit.getDefaultToolkit().getImage("dirt_128x128.png");
     }
 
     @Override
@@ -46,6 +48,15 @@ public class Pasto extends Ente{
     public void setFoto(Image foto) {
         this.foto = foto;
     }
+
+    public Image getFototierra() {
+        return fototierra;
+    }
+
+    public void setFototierra(Image fototierra) {
+        this.fototierra = fototierra;
+    }
+    
     
     
 }

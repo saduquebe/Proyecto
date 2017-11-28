@@ -39,8 +39,7 @@ public class Vista extends JPanel implements ActionListener {
     private int saltoEstado;
     private int alturaMinima;
     private JButton botonstart;
-    private JButton botonsalir;
-
+    private JButton botonsalir;    
     public Vista() {
         this.Estado=0;
         this.mapa2= new Mapa2();

@@ -136,6 +136,10 @@ public class Vista extends JPanel implements ActionListener {
             }
                         g.drawImage(this.mapa2.getFoto(), 0,0,1920,1080,
                     0,0,272,160,this);
+                       g.drawImage(this.mapa2.getEnemigo().getFoto(),this.mapa2.getEnemigo().getX()+this.mapa2.getX(),
+                               this.mapa2.getEnemigo().getY(),60+this.mapa2.getX()+this.mapa2.getEnemigo().getX(),
+                               this.mapa2.getEnemigo().getY()+60,(this.mapa2.getEnemigo().getXsprite()*32),0,
+                               (this.mapa2.getEnemigo().getXsprite()*32)+32,32,this);
             Image corazon= Toolkit.getDefaultToolkit().getImage("heart.png");
         Image monedaestatica= Toolkit.getDefaultToolkit().getImage("Full Coins.png");
           g.setFont( new Font( "Tahoma", Font.BOLD, 30) );
@@ -238,6 +242,7 @@ public class Vista extends JPanel implements ActionListener {
         else if(this.Estado==2){
             bmoneda=false;
                     this.mapa2.bordes();
+
         this.mapa2.setBordebandera(new Rectangle(this.mapa2.getBandera().getX()+this.mapa2.getX()-30,this.mapa2.getBandera().getY(),
         150,138));
         this.personaje.setBordes(new Rectangle(this.personaje.getX()+22, this.personaje.getY(), 50, 95));
@@ -281,6 +286,15 @@ public class Vista extends JPanel implements ActionListener {
             JOptionPane.showMessageDialog(this, "FELICITACIONES");
             System.exit(0);
         }
+                            this.mapa2.getEnemigo().setBordes(new Rectangle(this.mapa2.getEnemigo().getX()+this.mapa2.getX(),
+                            this.mapa2.getEnemigo().getY(),60,60));
+                    if(this.mapa2.getEnemigo().getBordes().intersects(this.personaje.getBordes())){
+                        this.puntaje--;
+                        this.mapa2.getEnemigo().setX(0);
+                        this.mapa2.getEnemigo().setY(0);
+                        this.mapa2.getEnemigo().setFoto(null);
+                        this.vidas--;
+                    }
         }
          return this.choca;
     }
@@ -392,6 +406,7 @@ public class Vista extends JPanel implements ActionListener {
             this.mapa2.getMonedas()[i].movermoneda();
         }
         this.mapa2.getBandera().moverbandera();
+        this.mapa2.getEnemigo().moverenemigo();
         }
         actualizar();
         repaint();

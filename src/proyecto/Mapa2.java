@@ -18,6 +18,7 @@ public class Mapa2 {
     private int x;
     private int y;
     private Image foto;
+    private Enemigo enemigo;
     private Rectangle[] bordescajas;
     private Rectangle[] bordesmonedas;
     private Caja[] cajas;
@@ -30,11 +31,12 @@ public class Mapa2 {
     public Mapa2() {
         this.x=0;
         this.y=0;
+        this.enemigo=new Enemigo(500,600);
         this.bordebandera=new Rectangle(0,0);
         this.bandera= new Bandera(2500,560);
         this.chuzos= new Spikes[21];
         this.bordeschuzos= new Rectangle[21];
-        this.foto = Toolkit.getDefaultToolkit().getImage("parallax-mountain.png");
+        this.foto = Toolkit.getDefaultToolkit().getImage("fondomapa2.png");
         this.bordescajas = new Rectangle[31];
         this.bordesmonedas= new Rectangle[20];
         this.cajas= new Caja[30];
@@ -48,6 +50,9 @@ public class Mapa2 {
     }
 
     public void bordes(){
+        for (int i = 0; i < this.cajas.length; i++) {
+            this.cajas[i].setFoto(Toolkit.getDefaultToolkit().getImage("01.png"));
+        }
         for (int i = 0; i < this.chuzos.length; i++) {
             this.bordeschuzos[i]=new Rectangle(this.chuzos[i].getX()+this.x,this.chuzos[i].getY(),60,60);
         }
@@ -248,4 +253,13 @@ public class Mapa2 {
     public void setBordebandera(Rectangle bordebandera) {
         this.bordebandera = bordebandera;
     }
+
+    public Enemigo getEnemigo() {
+        return enemigo;
+    }
+
+    public void setEnemigo(Enemigo enemigo) {
+        this.enemigo = enemigo;
+    }
+
 }

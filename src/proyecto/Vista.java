@@ -57,7 +57,7 @@ public class Vista extends JPanel implements ActionListener {
 
     @Override
     protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
+        super.paintComponent(g);
         if(this.Estado==0){
             Image fondo1= Toolkit.getDefaultToolkit().getImage("parallax-mountain.png");
             g.drawImage(fondo1,0,0,1920,1080,0,0,272,160, this);
@@ -124,7 +124,10 @@ public class Vista extends JPanel implements ActionListener {
                 this.personaje.getX() + 92, this.personaje.getY() + 100,
                 (this.personaje.getXsprite() * 46), (this.personaje.getYsprite() * 50),
                 ((this.personaje.getXsprite() * 46) + 46), ((this.personaje.getYsprite() * 50) + 50), this);
-    }
+        g.drawImage(this.mapa.getBandera().getFoto(),this.mapa.getBandera().getX()+this.mapa.getX(),this.mapa.getBandera().getY()-200,
+                this.mapa.getBandera().getX()+this.mapa.getX()+150,this.mapa.getBandera().getY()+180,(38*this.mapa.getBandera().getXsprite()),0,
+                38+(38*this.mapa.getBandera().getXsprite()),138,this);
+        }
     }
     public void camara() {
         this.mapa.setX(this.mapa.getX() - 1);
@@ -134,6 +137,8 @@ public class Vista extends JPanel implements ActionListener {
         this.choca=false;
         boolean bmoneda=false;
         this.mapa.bordes();
+        this.mapa.setBordebandera(new Rectangle(this.mapa.getBandera().getX()+this.mapa.getX()-30,this.mapa.getBandera().getY(),
+        150,138));
         this.personaje.setBordes(new Rectangle(this.personaje.getX()+22, this.personaje.getY(), 50, 95));
         for (Moneda moneda : this.mapa.getMonedas()) {
             moneda.setBordes(new Rectangle(moneda.getX() + this.mapa.getX(), moneda.getY(), 32, 32));
@@ -170,6 +175,10 @@ public class Vista extends JPanel implements ActionListener {
                 this.mapa.getMonedas()[i].setY(0);
                 this.puntaje++;
             }
+        }
+        if(this.mapa.getBordebandera().intersects(this.personaje.getBordes())){
+            JOptionPane.showMessageDialog(this,"GANASTE");
+            System.exit(0);
         }
         return this.choca;
     }
@@ -276,6 +285,7 @@ public class Vista extends JPanel implements ActionListener {
         for (int i = 0; i < this.mapa.getMonedas().length; i++) {
             this.mapa.getMonedas()[i].movermoneda();
         }
+        this.mapa.getBandera().moverbandera();
         actualizar();
         repaint();
     }

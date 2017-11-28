@@ -27,9 +27,13 @@ public class Mapa {
     private Rectangle[] bordeschuzos;
     private Moneda[] monedas;
     private Pasto[] piso;
+    private Rectangle bordebandera;
+    private Bandera bandera;
     public Mapa() {
         this.x=0;
         this.y=0;
+        this.bordebandera=new Rectangle(0,0);
+        this.bandera= new Bandera(2500,560);
         this.chuzos= new Spikes[7];
         this.bordeschuzos= new Rectangle[7];
         this.foto = Toolkit.getDefaultToolkit().getImage("layer-1.png");
@@ -226,6 +230,22 @@ public class Mapa {
 
     public void setBordeschuzos(Rectangle[] bordeschuzos) {
         this.bordeschuzos = bordeschuzos;
+    }
+
+    public Bandera getBandera() {
+        return bandera;
+    }
+
+    public void setBandera(Bandera bandera) {
+        this.bandera = bandera;
+    }
+
+    public Rectangle getBordebandera() {
+        return bordebandera;
+    }
+
+    public void setBordebandera(Rectangle bordebandera) {
+        this.bordebandera = bordebandera;
     }
     
 }

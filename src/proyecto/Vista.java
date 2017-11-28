@@ -29,6 +29,7 @@ public class Vista extends JPanel implements ActionListener {
     private Timer timer;
     private EventosTeclado teclado;
     private Mapa mapa;
+    private Mapa2 mapa2;
     private int vidas=3;
     private int puntaje = 0;
     private int base = 625;
@@ -41,7 +42,8 @@ public class Vista extends JPanel implements ActionListener {
     private JButton botonsalir;
 
     public Vista() {
-        this.Estado=0;
+        this.Estado=2;
+        this.mapa2= new Mapa2();
         botonstart= new JButton();
         this.botonsalir= new JButton();
         this.timer = new Timer(10, this);
@@ -90,7 +92,7 @@ public class Vista extends JPanel implements ActionListener {
                 }
             });
         }
-        else{
+        else if(this.Estado==1){
         botonstart.setVisible(false);
         botonsalir.setVisible(false);
         Image corazon= Toolkit.getDefaultToolkit().getImage("heart.png");
@@ -128,14 +130,61 @@ public class Vista extends JPanel implements ActionListener {
                 this.mapa.getBandera().getX()+this.mapa.getX()+150,this.mapa.getBandera().getY()+180,(38*this.mapa.getBandera().getXsprite()),0,
                 38+(38*this.mapa.getBandera().getXsprite()),138,this);
         }
+        else if(this.Estado==2){
+            for (int i = 0; i < this.mapa2.getPiso().length; i++) {
+               this.mapa2.getPiso()[i].setFoto(Toolkit.getDefaultToolkit().getImage("grass_dead_128x128.png"));
+            }
+                        g.drawImage(this.mapa2.getFoto(), 0,0,1920,1080,
+                    0,0,272,160,this);
+            Image corazon= Toolkit.getDefaultToolkit().getImage("heart.png");
+        Image monedaestatica= Toolkit.getDefaultToolkit().getImage("Full Coins.png");
+          g.setFont( new Font( "Tahoma", Font.BOLD, 30) );
+        g.drawString(String.valueOf(this.puntaje),927, 36);
+        g.drawImage(corazon,960,0, this);
+        g.drawImage(monedaestatica, 890, 10,922,42,0,0,16,16, this);
+        g.drawString(String.valueOf(this.vidas),1000,36);
+        for (Caja caja : this.mapa2.getCajas()) {
+            g.drawImage(caja.getFoto(), caja.getX() + this.mapa2.getX(), caja.getY(), this);
+        }
+                for (int i = 0; i < this.mapa2.getChuzos().length; i++) {
+            g.drawImage(this.mapa2.getChuzos()[i].getFoto(), this.mapa2.getChuzos()[i].getX()+this.mapa2.getX(),
+                    this.mapa2.getChuzos()[i].getY(), this.mapa2.getChuzos()[i].getX()+this.mapa2.getX()+60,this.mapa2.getChuzos()[i].getY()+60,
+                    0,0,160,160,this);
+        }
+
+            g.drawImage(this.personaje.getImagen(), this.personaje.getX(), this.personaje.getY() - 10,
+                this.personaje.getX() + 92, this.personaje.getY() + 100,
+                (this.personaje.getXsprite() * 46), (this.personaje.getYsprite() * 50),
+                ((this.personaje.getXsprite() * 46) + 46), ((this.personaje.getYsprite() * 50) + 50), this);
+                    for (int i = 0; i < (this.mapa2.getPiso().length/2); i++) {
+            g.drawImage(this.mapa2.getPiso()[i].getFoto(),this.mapa2.getPiso()[i].getX()+this.mapa2.getX(),this.mapa2.getPiso()[i].getY(),this);
+        }
+         for (int i = (this.mapa2.getPiso().length/2); i <this.mapa2.getPiso().length; i++) {
+            g.drawImage(this.mapa2.getPiso()[i].getFototierra(),this.mapa2.getPiso()[i].getX()+this.mapa2.getX(),this.mapa2.getPiso()[i].getY(),this);
+        }
+        for (Moneda moneda : this.mapa2.getMonedas()) {
+            g.drawImage(moneda.getFoto(), moneda.getX() + this.mapa2.getX(), moneda.getY(), moneda.getX() + this.mapa2.getX() + 32,
+                    moneda.getY() + 32, (16 * moneda.getXsprite()), 0, (16 + (moneda.getXsprite() * 16)),
+                    16, this);
+        }
+        g.drawImage(this.mapa2.getBandera().getFoto(),this.mapa2.getBandera().getX()+this.mapa2.getX(),this.mapa2.getBandera().getY()-200,
+                this.mapa2.getBandera().getX()+this.mapa2.getX()+150,this.mapa2.getBandera().getY()+180,(38*this.mapa2.getBandera().getXsprite()),0,
+                38+(38*this.mapa2.getBandera().getXsprite()),138,this);
+        }
     }
     public void camara() {
+        if(this.Estado==1){
         this.mapa.setX(this.mapa.getX() - 1);
+    }
+        else if(this.Estado==2){
+            this.mapa2.setX(this.mapa2.getX() - 1);
+        }
     }
 
     public boolean colisionar() {
         this.choca=false;
         boolean bmoneda=false;
+        if(this.Estado==1){
         this.mapa.bordes();
         this.mapa.setBordebandera(new Rectangle(this.mapa.getBandera().getX()+this.mapa.getX()-30,this.mapa.getBandera().getY(),
         150,138));
@@ -177,12 +226,63 @@ public class Vista extends JPanel implements ActionListener {
             }
         }
         if(this.mapa.getBordebandera().intersects(this.personaje.getBordes())){
-            JOptionPane.showMessageDialog(this,"GANASTE");
+           this.Estado=2;
+           this.personaje.setY(625);
+           this.personaje.setX(0);
+           this.choca=false;
+        }
+       
+    }
+        else if(this.Estado==2){
+            bmoneda=false;
+                    this.mapa2.bordes();
+        this.mapa2.setBordebandera(new Rectangle(this.mapa2.getBandera().getX()+this.mapa2.getX()-30,this.mapa2.getBandera().getY(),
+        150,138));
+        this.personaje.setBordes(new Rectangle(this.personaje.getX()+22, this.personaje.getY(), 50, 95));
+        for (Moneda moneda : this.mapa2.getMonedas()) {
+            moneda.setBordes(new Rectangle(moneda.getX() + this.mapa2.getX(), moneda.getY(), 32, 32));
+        }
+            for (Rectangle bordescaja : this.mapa2.getBordescajas()) {
+                if (bordescaja.intersects(this.personaje.getBordes())) {
+                    this.choca = true;
+                }
+            }
+        for (int i = 0; i < this.mapa2.getChuzos().length; i++) {
+               if (this.mapa2.getBordeschuzos()[i].intersects(this.personaje.getBordes())) {
+                   bmoneda=true;
+               }
+        }
+        if(bmoneda){
+               if(this.vidas>0){
+                this.mapa2.setX(0);
+                this.personaje.setX(0);
+                this.personaje.setY(625);
+                this.vidas--;
+                
+                   }
+                   else{
+                       JOptionPane.showMessageDialog(this,"FIN DEL JUEGO"); 
+                       this.timer.stop();
+                   }
+        }
+        for (int i = 0; i < this.mapa2.getBordesmonedas().length; i++) {
+             Thread sonido= new Thread(new SonidoMoneda());
+            if (this.personaje.getBordes().intersects(this.mapa2.getBordesmonedas()[i])) {
+                sonido.start();
+                this.mapa2.getMonedas()[i].setFoto(null);
+                this.mapa2.getMonedas()[i].setX(0);
+                this.mapa2.getMonedas()[i].setY(0);
+                this.puntaje++;
+            }
+        }
+        if(this.mapa2.getBordebandera().intersects(this.personaje.getBordes())){
+            JOptionPane.showMessageDialog(this, "FELICITACIONES");
             System.exit(0);
         }
-        return this.choca;
+       
+        }
+         return this.choca;
     }
-
 
     
     public void actualizar() {
@@ -219,7 +319,8 @@ public class Vista extends JPanel implements ActionListener {
             if (colisionar()) {
                 this.personaje.setX(this.personaje.getX() + 2);
             }
-
+            System.out.println(this.personaje.getX()+this.mapa.getX());
+            System.out.println(this.personaje.getY());
             this.choca = false;
         }
 
@@ -232,6 +333,8 @@ public class Vista extends JPanel implements ActionListener {
             } else {
                 camara();
             }
+                        System.out.println(this.personaje.getX());
+            System.out.println(this.personaje.getY());
             this.choca = false;
         }
 
@@ -282,10 +385,18 @@ public class Vista extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(this.Estado==1){
         for (int i = 0; i < this.mapa.getMonedas().length; i++) {
             this.mapa.getMonedas()[i].movermoneda();
         }
         this.mapa.getBandera().moverbandera();
+        }
+        else if(this.Estado==2){
+        for (int i = 0; i < this.mapa2.getMonedas().length; i++) {
+            this.mapa2.getMonedas()[i].movermoneda();
+        }
+        this.mapa2.getBandera().moverbandera();
+        }
         actualizar();
         repaint();
     }

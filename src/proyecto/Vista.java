@@ -42,7 +42,7 @@ public class Vista extends JPanel implements ActionListener {
     private JButton botonsalir;
 
     public Vista() {
-        this.Estado=2;
+        this.Estado=0;
         this.mapa2= new Mapa2();
         botonstart= new JButton();
         this.botonsalir= new JButton();
@@ -229,6 +229,8 @@ public class Vista extends JPanel implements ActionListener {
            this.Estado=2;
            this.personaje.setY(625);
            this.personaje.setX(0);
+           this.puntaje=0;
+  
            this.choca=false;
         }
        
@@ -279,7 +281,6 @@ public class Vista extends JPanel implements ActionListener {
             JOptionPane.showMessageDialog(this, "FELICITACIONES");
             System.exit(0);
         }
-       
         }
          return this.choca;
     }
@@ -291,11 +292,6 @@ public class Vista extends JPanel implements ActionListener {
             this.personaje.setXsprite(0);
             this.personaje.setYsprite(0);
         }
-//        if(teclado.arriba){
-//            System.out.println("ARRIBA");
-//            this.personaje.setY(this.personaje.getY()-10);
-//        }
-
         if (teclado.abajo) {
             System.out.println("ABAJO");
             this.personaje.setXsprite(1);

@@ -5,12 +5,16 @@
  */
 package proyecto;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -20,6 +24,7 @@ import javax.swing.Timer;
  * @author User
  */
 public class Vista extends JPanel implements ActionListener {
+    private int Estado;
     private Personaje personaje;
     private Timer timer;
     private EventosTeclado teclado;
@@ -32,8 +37,13 @@ public class Vista extends JPanel implements ActionListener {
     private int alturaInicial;
     private int saltoEstado;
     private int alturaMinima;
+    private JButton botonstart;
+    private JButton botonsalir;
 
     public Vista() {
+        this.Estado=0;
+        botonstart= new JButton();
+        this.botonsalir= new JButton();
         this.timer = new Timer(10, this);
         this.personaje = new Personaje(0, 625);
         this.teclado = new EventosTeclado();
@@ -47,17 +57,50 @@ public class Vista extends JPanel implements ActionListener {
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+                super.paintComponent(g);
+        if(this.Estado==0){
+            Image fondo1= Toolkit.getDefaultToolkit().getImage("parallax-mountain.png");
+            g.drawImage(fondo1,0,0,1920,1080,0,0,272,160, this);
+            ImageIcon start= new ImageIcon();
+            start.setImage(Toolkit.getDefaultToolkit().getImage("cajainicio.png"));
+            ImageIcon exit=new ImageIcon();
+            exit.setImage(Toolkit.getDefaultToolkit().getImage("cajasalir.png"));
+            botonsalir.setIcon(exit);
+            botonstart.setIcon(start);
+            botonstart.setBorder(null);
+            botonsalir.setBorder(null);
+            botonstart.setLayout(null);
+            botonsalir.setLayout(null);
+            botonstart.setBounds(new Rectangle(800,500,317,77));
+            botonsalir.setBounds(new Rectangle(800,580,317,77));
+            add(botonstart);
+            add(botonsalir);
+            botonstart.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                   Estado=1;
+
+
+                }
+            });
+            botonsalir.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                   System.exit(0);
+                }
+            });
+        }
+        else{
+        botonstart.setVisible(false);
+        botonsalir.setVisible(false);
         Image corazon= Toolkit.getDefaultToolkit().getImage("heart.png");
         Image monedaestatica= Toolkit.getDefaultToolkit().getImage("Full Coins.png");
-                for (int i = 0; i < this.mapa.getBordescajas().length; i++) {
-            g.drawRect((int)this.mapa.getBordescajas()[i].getX(),(int) this.mapa.getBordescajas()[i].getY(),(int)this.mapa.getBordescajas()[i].getWidth(),(int)this.mapa.getBordescajas()[i].getHeight());
-        }
         g.drawImage(this.mapa.getFoto(), this.mapa.getX(), this.mapa.getY(), this);
-        g.drawString(String.valueOf(this.puntaje),930, 29);
-        g.drawImage(corazon,940,0, this);
+          g.setFont( new Font( "Tahoma", Font.BOLD, 30) );
+        g.drawString(String.valueOf(this.puntaje),927, 36);
+        g.drawImage(corazon,960,0, this);
         g.drawImage(monedaestatica, 890, 10,922,42,0,0,16,16, this);
-        g.drawString(String.valueOf(this.vidas),985,28);
+        g.drawString(String.valueOf(this.vidas),1000,36);
         for (Caja caja : this.mapa.getCajas()) {
             g.drawImage(caja.getFoto(), caja.getX() + this.mapa.getX(), caja.getY(), this);
         }
@@ -82,7 +125,7 @@ public class Vista extends JPanel implements ActionListener {
                 (this.personaje.getXsprite() * 46), (this.personaje.getYsprite() * 50),
                 ((this.personaje.getXsprite() * 46) + 46), ((this.personaje.getYsprite() * 50) + 50), this);
     }
-
+    }
     public void camara() {
         this.mapa.setX(this.mapa.getX() - 1);
     }
@@ -111,6 +154,7 @@ public class Vista extends JPanel implements ActionListener {
                 this.personaje.setX(0);
                 this.personaje.setY(625);
                 this.vidas--;
+                
                    }
                    else{
                        JOptionPane.showMessageDialog(this,"FIN DEL JUEGO"); 
